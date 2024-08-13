@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>JIRA Tool Extension</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+    }
+    .input-group {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, button {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>JIRA Tool Extension</h1>
+  <div class="input-group">
+    <label for="api-url">JIRA API URL:</label>
+    <input type="text" id="api-url" placeholder="https://your-jira-instance/api">
+  </div>
+  <div class="input-group">
+    <label for="api-key">API Key:</label>
+    <input type="text" id="api-key" placeholder="your-api-key">
+  </div>
+  <div class="input-group">
+    <label for="sql-query">SQL Query:</label>
+    <input type="text" id="sql-query" placeholder="SELECT * FROM your_table">
+  </div>
+  <button id="fetch-data">Fetch JIRA Data</button>
+  <button id="execute-sql">Execute SQL</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    document.getElementById('fetch-data').addEventListener('click', () => {
+      const apiUrl = document.getElementById('api-url').value;
+      const apiKey = document.getElementById('api-key').value;
+      chrome.runtime.sendMessage({ action: 'fetchJiraData', apiUrl, apiKey }, (response) => {
+        document.getElementById('result').textContent = JSON.stringify(response.data, null, 2);
+      });
+    });
+
+    document.getElementById('execute-sql').addEventListener('click', () => {
+      const query = document.getElementById('sql-query').value;
+      chrome.runtime.sendMessage({ action: 'executeSQL', query }, (response) => {
+        document.getElementById('result').textContent = JSON.stringify(response.result, null, 2);
+      });
+    });
+  </script>
+</body>
+</html>
