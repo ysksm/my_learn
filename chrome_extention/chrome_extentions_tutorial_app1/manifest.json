@@ -18,10 +18,15 @@
     "permissions": [
         "storage",
         "sidePanel",
-        "tabs"
+        "tabs",
+        "webRequest"
     ],
     "side_panel": {
         "default_path": "src/sidePanel.html",
         "open_at_install": true
-    }
+    },
+    "host_permissions": [
+        "https://**.atlassian.net/*",
+        "http://localhost:3000/*"
+    ]
 }
