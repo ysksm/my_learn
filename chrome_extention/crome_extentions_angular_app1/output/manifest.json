@@ -1,0 +1,31 @@
+{
+    "manifest_version": 3,
+    "name": "Angular App1",
+    "version": "1.0",
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Angular App1",
+        "default_icon": {
+            "16": "images/icon16.png",
+            "48": "images/icon48.png",
+            "128": "images/icon128.png"
+        }
+    },
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+    "permissions": [
+        "storage",
+        "sidePanel",
+        "tabs",
+        "webRequest"
+    ],
+    "side_panel": {
+        "default_path": "src/browser/index.html",
+        "open_at_install": true
+    },
+    "host_permissions": [
+        "http://localhost:3000/*"
+    ]
+}
