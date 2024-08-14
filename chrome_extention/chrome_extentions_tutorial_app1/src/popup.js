@@ -9,3 +9,8 @@ function setAlarm(event) {
 let button = document.getElementById('clickMeButton')
 button.addEventListener('click', setAlarm);
 // document.getElementById('sampleMinute').addEventListener('click', setAlarm);
+
+let button1 = document.getElementById('button1');
+button1.addEventListener('click', function() {
+  console.log('button1 clicked');
+});
