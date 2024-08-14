@@ -4,6 +4,7 @@
     "version": "1.0",
     "action": {
         "default_popup": "src/popup.html",
+        "default_title": "SideBar",
         "default_icon": {
             "16": "images/icon16.png",
             "48": "images/icon48.png",
@@ -15,6 +16,11 @@
         "type": "module"
     },
     "permissions": [
-        "storage"
-    ]
+        "storage",
+        "sidePanel"
+    ],
+    "side_panel": {
+        "default_path": "src/sidePanel.html",
+        "open_at_install": true
+    }
 }
