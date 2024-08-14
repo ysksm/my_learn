@@ -30,8 +30,12 @@ btnOpenSideBar.addEventListener('click', function() {
 
 let btnRequestAPI = document.getElementById('btnRequestAPI');
 btnRequestAPI.addEventListener('click', function() {
+
+  let organization = document.getElementById('organization').value;
+  let url = `https://${organization}.atlassian.net/rest/api/3/field`;
+
   console.log('btnRequestAPI clicked');
-  fetch('https://**.atlassian.net/rest/api/3/field')
+  fetch(url)
   .then(response => response.json())
   .then(json => console.log(json));
 });

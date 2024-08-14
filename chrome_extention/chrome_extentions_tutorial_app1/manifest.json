@@ -26,7 +26,7 @@
         "open_at_install": true
     },
     "host_permissions": [
-        "https://**.atlassian.net/*",
+        "https://*.atlassian.net/*",
         "http://localhost:3000/*"
     ]
 }
