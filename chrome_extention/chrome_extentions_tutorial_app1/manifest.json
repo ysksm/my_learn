@@ -17,7 +17,8 @@
     },
     "permissions": [
         "storage",
-        "sidePanel"
+        "sidePanel",
+        "tabs"
     ],
     "side_panel": {
         "default_path": "src/sidePanel.html",
