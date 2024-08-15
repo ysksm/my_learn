@@ -35,3 +35,19 @@ btnRequestAPI.addEventListener('click', function() {
 
   });
 });
+
+let btnLocalRequestAPI = document.getElementById('btnLocalRequestAPI');
+btnLocalRequestAPI.addEventListener('click', function() {
+  console.log('btnLocalRequestAPI clicked');
+  const url = 'http://localhost/data.json';
+
+  fetch(url)
+  .then(response => response.json())
+  .then(json => {
+    console.log(json);
+    const logArea2 = document.getElementById('logArea2');
+    logArea2.innerHTML = JSON.stringify(json);
+  });
+});
+
+

@@ -27,6 +27,6 @@
     },
     "host_permissions": [
         "https://*.atlassian.net/*",
-        "http://localhost:3000/*"
+        "http://localhost/*"
     ]
 }
