@@ -1,0 +1,42 @@
+<app-header></app-header>
+
+<h1>接続設定</h1>
+<table mat-table [dataSource]="jiraSettings" class="mat-elevation-z8 jira-settings-table">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>サービス名</th>
+      <td mat-cell *matCellDef="let element">{{element.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="base_url">
+      <th mat-header-cell *matHeaderCellDef>接続先</th>
+      <td mat-cell *matCellDef="let element">{{element.base_url}}</td>
+    </ng-container>
+  
+      <ng-container matColumnDef="user_name">
+      <th mat-header-cell *matHeaderCellDef>ユーザー名</th>
+      <td mat-cell *matCellDef="let element">{{element.user_name}}</td>
+    </ng-container>
+  
+    <ng-container matColumnDef="api_token">
+      <th mat-header-cell *matHeaderCellDef>api_token</th>
+      <td mat-cell *matCellDef="let element">{{element.api_token}}</td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+        mat-row      
+        (click)="selectRow($event, row)"
+        *matRowDef="let row; columns: displayedColumns;"
+    ></tr>
+</table>
+
+<form [formGroup]="jiraSettingForm" (ngSubmit)="onSubmit()">
+  <input matInput placeholder="id" formControlName="id">
+    <input matInput placeholder="base_url" formControlName="base_url">
+    <input matInput placeholder="user_name" formControlName="user_name">
+    <input matInput placeholder="api_token" formControlName="api_token">
+    <button mat-raised-button type="submit">更新</button>
+</form>
+
+
+<input type="button" value="接続設定追加" (click)="createNewJiraSetting($event)">

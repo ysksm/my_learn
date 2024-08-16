@@ -1,0 +1,9 @@
+<div>
+    <mat-toolbar color="primary">Menu</mat-toolbar>
+</div>
+<mat-nav-list>
+    <a mat-list-item routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a>
+    <a mat-list-item routerLink="/settings" routerLinkActive="active" ariaCurrentWhenActive="page">設定</a>
+    <a mat-list-item routerLink="/google" routerLinkActive="active" ariaCurrentWhenActive="page">外部</a>
+    <input type="button" (click)="redirectToGoogle()" value="Googleへ">
+</mat-nav-list>
