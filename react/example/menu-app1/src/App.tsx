@@ -2,6 +2,7 @@
 import { css } from "@emotion/react";
 import './App.css'
 import MenuButton from "./shared/components/MenuButton/MenuButton.tsx";
+import Sidebar from "./features/SideBar/index.tsx";
 
 function App() {
 
@@ -10,9 +11,7 @@ function App() {
       <div css={styles.root}>
         <div css={styles.header}>header</div>
         <div css={styles.contentRoot}>
-          <div css={styles.menu}>
-            <MenuButton buttonText="Menu1"></MenuButton>
-          </div>
+          <Sidebar></Sidebar>
           <div css={styles.content}>content</div>
         </div>
       </div>
@@ -38,10 +37,6 @@ const styles = {
     height: calc(100vh - 50px);
     display: flex;
     flex-direction: row;`,
-  menu: css`
-    width: 200px;
-    height: 100%;
-    background-color: #282c34;`,
   content: css`
     height: 100%;
     width: 100%;
