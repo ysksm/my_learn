@@ -1,7 +1,10 @@
 import "./App.css";
+import { MainPanel } from "./components/MainPanel";
 
 function App() {
-	return <></>;
+	return <>
+		<MainPanel />
+	</>;
 }
 
 export default App;
