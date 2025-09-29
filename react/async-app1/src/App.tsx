@@ -1,34 +1,83 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { PureReactPage } from './pure-react/pages/PureReactPage'
+import { RxJSPage } from './rxjs/pages/RxJSPage'
+import { ComparisonPage } from './comparison/pages/ComparisonPage'
 import './App.css'
 
+type PageType = 'home' | 'pure-react' | 'rxjs' | 'comparison';
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState<PageType>('home')
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'home':
+        return (
+          <div className="home-page">
+            <h1>React Async Learning Project</h1>
+            <p>
+              This project demonstrates different approaches to handling async operations in React.
+            </p>
+            <div className="nav-cards">
+              <div className="nav-card" onClick={() => setCurrentPage('pure-react')}>
+                <h2>Pure React</h2>
+                <p>Using only React's built-in features</p>
+              </div>
+              <div className="nav-card" onClick={() => setCurrentPage('rxjs')}>
+                <h2>RxJS</h2>
+                <p>Using reactive programming</p>
+              </div>
+              <div className="nav-card" onClick={() => setCurrentPage('comparison')}>
+                <h2>Comparison</h2>
+                <p>Side-by-side comparison</p>
+              </div>
+            </div>
+          </div>
+        );
+      case 'pure-react':
+        return <PureReactPage />;
+      case 'rxjs':
+        return <RxJSPage />;
+      case 'comparison':
+        return <ComparisonPage />;
+      default:
+        return <div>Page not found</div>;
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="app">
+      <nav className="app-nav">
+        <button
+          onClick={() => setCurrentPage('home')}
+          className={currentPage === 'home' ? 'active' : ''}
+        >
+          Home
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+        <button
+          onClick={() => setCurrentPage('pure-react')}
+          className={currentPage === 'pure-react' ? 'active' : ''}
+        >
+          Pure React
+        </button>
+        <button
+          onClick={() => setCurrentPage('rxjs')}
+          className={currentPage === 'rxjs' ? 'active' : ''}
+        >
+          RxJS
+        </button>
+        <button
+          onClick={() => setCurrentPage('comparison')}
+          className={currentPage === 'comparison' ? 'active' : ''}
+        >
+          Comparison
+        </button>
+      </nav>
+
+      <main className="app-main">
+        {renderPage()}
+      </main>
+    </div>
   )
 }
 
