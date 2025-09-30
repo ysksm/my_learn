@@ -116,33 +116,28 @@ export function useRxPolling<T>(
   }, []);
 
   const refetch = useCallback(() => {
-    if (!state.isPolling) {
-      setState(prev => ({ ...prev, loading: true, error: null }));
+    setState(prev => ({ ...prev, loading: true, error: null }));
 
-      const singleFetch = observableFactory().subscribe({
-        next: (data) => {
-          setState(prev => ({
-            ...prev,
-            data,
-            loading: false,
-            error: null
-          }));
-        },
-        error: (error) => {
-          setState(prev => ({
-            ...prev,
-            loading: false,
-            error: error instanceof RepositoryError
-              ? error
-              : RepositoryError.networkError('Refetch error occurred')
-          }));
-        }
-      });
-
-      // 自動的にクリーンアップ
-      setTimeout(() => singleFetch.unsubscribe(), 0);
-    }
-  }, [observableFactory, state.isPolling]);
+    observableFactory().subscribe({
+      next: (data) => {
+        setState(prev => ({
+          ...prev,
+          data,
+          loading: false,
+          error: null
+        }));
+      },
+      error: (error) => {
+        setState(prev => ({
+          ...prev,
+          loading: false,
+          error: error instanceof RepositoryError
+            ? error
+            : RepositoryError.networkError('Refetch error occurred')
+        }));
+      }
+    });
+  }, [observableFactory]);
 
   useEffect(() => {
     if (autoStart) {
@@ -152,7 +147,8 @@ export function useRxPolling<T>(
     return () => {
       stop();
     };
-  }, [autoStart, start, stop]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoStart]);
 
   return {
     ...state,

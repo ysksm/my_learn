@@ -111,7 +111,8 @@ export function usePolling<T>(
     return () => {
       stop();
     };
-  }, [autoStart, start, stop]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoStart]);
 
   return {
     ...state,

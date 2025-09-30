@@ -36,7 +36,7 @@ export const RxPollingData: React.FC = () => {
           >
             {isPolling ? 'Stop Polling' : 'Start Polling'}
           </button>
-          <button onClick={refetch} disabled={loading || isPolling}>
+          <button onClick={refetch} disabled={loading}>
             Manual Refresh
           </button>
         </div>
