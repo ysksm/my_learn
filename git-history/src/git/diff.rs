@@ -25,51 +25,19 @@ pub fn extract_file_changes(
 
 /// Diffを解析してFileChangeのリストを作成
 fn analyze_diff(diff: &Diff, commit_hash: &str) -> Result<Vec<FileChange>> {
-    let mut changes = Vec::new();
-
-    // まず各ファイルのメタデータを収集
-    diff.foreach(
-        &mut |delta, _progress| {
-            let file_path = delta
-                .new_file()
-                .path()
-                .unwrap_or_else(|| delta.old_file().path().unwrap())
-                .to_string_lossy()
-                .to_string();
-
-            let change_type = ChangeType::from_git_delta(delta.status());
-
-            changes.push(FileChange {
-                commit_hash: commit_hash.to_string(),
-                file_path,
-                lines_added: 0,
-                lines_deleted: 0,
-                total_lines: None,
-                commit_count: 1,
-                change_type,
-            });
-
-            true
-        },
-        None,
-        None,
-        None,
-    )?;
-
-    // 各ファイルごとに正確な行数を計算
-    calculate_line_stats_per_file(diff, &mut changes)?;
-
-    Ok(changes)
-}
-
-/// 各ファイルごとに行数を正確に計算
-fn calculate_line_stats_per_file(diff: &Diff, changes: &mut [FileChange]) -> Result<()> {
     use std::collections::HashMap;
 
-    // ファイルパスごとの行数を集計
-    let mut file_stats: HashMap<String, (i32, i32)> = HashMap::new();
+    // ファイルパスごとのデータを一度に収集
+    #[derive(Default)]
+    struct FileData {
+        change_type: Option<ChangeType>,
+        lines_added: i32,
+        lines_deleted: i32,
+    }
 
-    // 行ごとの変更を解析
+    let mut file_map: HashMap<String, FileData> = HashMap::new();
+
+    // diff.printで全ての情報を一度に収集
     diff.print(git2::DiffFormat::Patch, |delta, _hunk, line| {
         let file_path = delta
             .new_file()
@@ -78,26 +46,38 @@ fn calculate_line_stats_per_file(diff: &Diff, changes: &mut [FileChange]) -> Res
             .to_string_lossy()
             .to_string();
 
-        let stats = file_stats.entry(file_path).or_insert((0, 0));
+        let data = file_map.entry(file_path).or_default();
 
+        // 変更タイプを設定（最初の1回だけ）
+        if data.change_type.is_none() {
+            data.change_type = Some(ChangeType::from_git_delta(delta.status()));
+        }
+
+        // 行数をカウント
         match line.origin() {
-            '+' => stats.0 += 1, // 追加行
-            '-' => stats.1 += 1, // 削除行
+            '+' => data.lines_added += 1,
+            '-' => data.lines_deleted += 1,
             _ => {}
         }
 
         true
     })?;
 
-    // 集計結果をFileChangeに反映
-    for change in changes.iter_mut() {
-        if let Some(&(added, deleted)) = file_stats.get(&change.file_path) {
-            change.lines_added = added;
-            change.lines_deleted = deleted;
-        }
-    }
+    // HashMapからVecに変換
+    let changes: Vec<FileChange> = file_map
+        .into_iter()
+        .map(|(file_path, data)| FileChange {
+            commit_hash: commit_hash.to_string(),
+            file_path,
+            lines_added: data.lines_added,
+            lines_deleted: data.lines_deleted,
+            total_lines: None,
+            commit_count: 1,
+            change_type: data.change_type.unwrap_or(ChangeType::Modify),
+        })
+        .collect();
 
-    Ok(())
+    Ok(changes)
 }
 
 /// ファイルのコミット回数を計算するヘルパー

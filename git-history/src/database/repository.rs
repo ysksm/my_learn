@@ -64,7 +64,7 @@ impl Database {
         {
             let mut stmt = tx.prepare(
                 r#"
-                INSERT INTO file_changes
+                INSERT OR IGNORE INTO file_changes
                 (commit_hash, file_path, lines_added, lines_deleted, total_lines, commit_count, change_type)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 "#,
