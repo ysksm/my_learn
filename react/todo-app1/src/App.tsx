@@ -29,6 +29,19 @@ function App() {
     return () => clearInterval(intervalId);
   }, [fetchTodos]);
 
+  // 他のタブでの変更を検知してデータを同期
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'todo-app-data' || e.key === null) {
+        console.log('[Storage Event] 他のタブでデータが変更されました。再読み込みします。');
+        fetchTodos();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [fetchTodos]);
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
       <h1>Todo アプリケーション</h1>

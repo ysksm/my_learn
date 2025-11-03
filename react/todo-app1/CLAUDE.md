@@ -61,6 +61,8 @@ src/
 
 **Data Persistence:** LocalStorageTodoRepository saves todos to browser LocalStorage (replaces MockTodoRepository)
 
+**Multi-Tab Sync:** Uses storage event to sync data across multiple browser tabs in real-time
+
 **Initial Data:** First launch creates 4 sample todos with 3 available assignees
 
 **State Management:** Direct React state (useState/useEffect) - no external state library
