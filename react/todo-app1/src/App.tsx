@@ -12,12 +12,20 @@ function App() {
 
   const fetchTodos = useCallback(async () => {
     try {
+      console.log('[fetchTodos] データ取得開始');
       const getTodosUseCase = new GetTodosUseCase(container.getTodoRepository());
       const fetchedTodos = await getTodosUseCase.execute();
-      setTodos(fetchedTodos);
+      console.log('[fetchTodos] 取得したTodo数:', fetchedTodos.length);
+      console.log('[fetchTodos] Todoの内容:', fetchedTodos.map(t => ({
+        id: t.id,
+        title: t.title,
+        status: t.status,
+        assignee: t.assignee?.name
+      })));
+      setTodos([...fetchedTodos]); // 新しい配列参照を作成
       setLastUpdated(new Date());
       setLoading(false);
-      console.log('[Polling] Todoを取得しました:', new Date().toLocaleTimeString());
+      console.log('[fetchTodos] 状態更新完了');
     } catch (error) {
       console.error('[Polling] エラー:', error);
     }

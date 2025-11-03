@@ -28,21 +28,49 @@ export class LocalStorageTodoRepository implements TodoRepository {
 
   async findAll(): Promise<Todo[]> {
     await this.delay(50);
-    return [...this.todos];
+    // 毎回LocalStorageから最新のデータを読み込む（複数タブ同期のため）
+    this.todos = this.loadFromStorage();
+    if (this.todos.length === 0) {
+      this.todos = this.getInitialData();
+      this.saveToStorage();
+    }
+    // 新しいインスタンスを作成して返す
+    return this.todos.map(
+      (todo) =>
+        new Todo(
+          todo.id,
+          todo.title,
+          todo.status,
+          todo.assignee ? new Assignee(todo.assignee.id, todo.assignee.name) : null
+        )
+    );
   }
 
   async findById(id: string): Promise<Todo | null> {
     await this.delay(50);
+    // 毎回LocalStorageから最新のデータを読み込む（複数タブ同期のため）
+    this.todos = this.loadFromStorage();
     const todo = this.todos.find((t) => t.id === id);
-    return todo || null;
+    if (!todo) return null;
+    // 新しいインスタンスを作成して返す
+    return new Todo(
+      todo.id,
+      todo.title,
+      todo.status,
+      todo.assignee ? new Assignee(todo.assignee.id, todo.assignee.name) : null
+    );
   }
 
   async update(todo: Todo): Promise<void> {
     await this.delay(50);
+    // 更新前に最新のデータを読み込む（複数タブ同期のため）
+    this.todos = this.loadFromStorage();
     const index = this.todos.findIndex((t) => t.id === todo.id);
     if (index !== -1) {
+      console.log('[LocalStorage] Todo更新:', { id: todo.id, status: todo.status, assignee: todo.assignee?.name });
       this.todos[index] = todo;
       this.saveToStorage();
+      console.log('[LocalStorage] 更新後のデータ:', this.todos.map(t => ({ id: t.id, status: t.status })));
     }
   }
 

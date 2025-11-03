@@ -14,16 +14,20 @@ interface TodoItemProps {
 export function TodoItem({ todo, onUpdate }: TodoItemProps) {
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value as TodoStatus;
+    console.log('[TodoItem] 状態変更開始:', { id: todo.id, oldStatus: todo.status, newStatus });
     const updateStatusUseCase = new UpdateTodoStatusUseCase(container.getTodoRepository());
     await updateStatusUseCase.execute(todo.id, newStatus);
+    console.log('[TodoItem] 状態変更完了、onUpdate()呼び出し');
     onUpdate();
   };
 
   const handleAssigneeChange = async (newAssignee: Assignee | null) => {
+    console.log('[TodoItem] 担当者変更開始:', { id: todo.id, oldAssignee: todo.assignee?.name, newAssignee: newAssignee?.name });
     const updateAssigneeUseCase = new UpdateTodoAssigneeUseCase(
       container.getTodoRepository()
     );
     await updateAssigneeUseCase.execute(todo.id, newAssignee);
+    console.log('[TodoItem] 担当者変更完了、onUpdate()呼び出し');
     onUpdate();
   };
 
