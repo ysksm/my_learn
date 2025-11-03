@@ -1,34 +1,28 @@
-import { Todo } from '../../domain/models/Todo';
+import type { Todo } from '../../domain/models/Todo';
 import type { TodoStatus } from '../../domain/models/TodoStatus';
-import { Assignee } from '../../domain/models/Assignee';
+import type { Assignee } from '../../domain/models/Assignee';
 import { AssigneeSelector } from './AssigneeSelector';
-import { UpdateTodoStatusUseCase } from '../../application/usecases/UpdateTodoStatusUseCase';
-import { UpdateTodoAssigneeUseCase } from '../../application/usecases/UpdateTodoAssigneeUseCase';
-import { container } from '../../application/di/container';
+import { useAppDispatch } from '../store/hooks';
+import { updateTodoStatus, updateTodoAssignee } from '../store/slices/todoSlice';
 
 interface TodoItemProps {
   todo: Todo;
-  onUpdate: () => void;
 }
 
-export function TodoItem({ todo, onUpdate }: TodoItemProps) {
+export function TodoItem({ todo }: TodoItemProps) {
+  const dispatch = useAppDispatch();
+
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value as TodoStatus;
     console.log('[TodoItem] 状態変更開始:', { id: todo.id, oldStatus: todo.status, newStatus });
-    const updateStatusUseCase = new UpdateTodoStatusUseCase(container.getTodoRepository());
-    await updateStatusUseCase.execute(todo.id, newStatus);
-    console.log('[TodoItem] 状態変更完了、onUpdate()呼び出し');
-    onUpdate();
+    await dispatch(updateTodoStatus({ todoId: todo.id, newStatus }));
+    console.log('[TodoItem] 状態変更完了');
   };
 
   const handleAssigneeChange = async (newAssignee: Assignee | null) => {
     console.log('[TodoItem] 担当者変更開始:', { id: todo.id, oldAssignee: todo.assignee?.name, newAssignee: newAssignee?.name });
-    const updateAssigneeUseCase = new UpdateTodoAssigneeUseCase(
-      container.getTodoRepository()
-    );
-    await updateAssigneeUseCase.execute(todo.id, newAssignee);
-    console.log('[TodoItem] 担当者変更完了、onUpdate()呼び出し');
-    onUpdate();
+    await dispatch(updateTodoAssignee({ todoId: todo.id, newAssignee }));
+    console.log('[TodoItem] 担当者変更完了');
   };
 
   return (

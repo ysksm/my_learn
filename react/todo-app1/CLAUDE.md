@@ -33,9 +33,10 @@ src/
 │   └── di/            # Dependency Injection container
 ├── infrastructure/     # Infrastructure Layer - External implementations
 │   └── repositories/  # MockTodoRepository (in-memory data)
-└── presentation/       # Presentation Layer - React components, hooks
+└── presentation/       # Presentation Layer - React components, Redux
+    ├── store/         # Redux Store, Slices, Thunks
     ├── components/    # TodoList, TodoItem, AssigneeSelector
-    └── hooks/         # useTodoPolling
+    └── hooks/         # Custom hooks (future)
 ```
 
 ### Key Principles
@@ -53,11 +54,11 @@ src/
 
 ## Implementation Details
 
-**Entry Point:** src/main.tsx initializes the React app with StrictMode
+**Entry Point:** src/main.tsx initializes the React app with StrictMode and Redux Provider
 
-**Main Component:** src/App.tsx manages polling and renders TodoList
+**Main Component:** src/App.tsx dispatches Redux actions for polling and renders TodoList
 
-**Polling:** Every 5 seconds, fetches todos and updates UI (see useTodoPolling hook or App.tsx)
+**Polling:** Every 5 seconds, dispatches fetchTodos thunk to update Redux state
 
 **Data Persistence:** LocalStorageTodoRepository saves todos to browser LocalStorage (replaces MockTodoRepository)
 
@@ -65,16 +66,22 @@ src/
 
 **Initial Data:** First launch creates 4 sample todos with 3 available assignees
 
-**State Management:** Direct React state (useState/useEffect) - no external state library
+**State Management:** Redux Toolkit with React Redux for global state management
+- Redux Store: Centralized state container
+- Slices: Todo slice with reducers and actions
+- Thunks: Async actions that call Use Cases (fetchTodos, updateTodoStatus, updateTodoAssignee)
+- Selectors: Type-safe state selectors
 
 **TypeScript Configuration:** Uses composite project references (tsconfig.json) with separate configs for app code (tsconfig.app.json) and build tooling (tsconfig.node.json)
 
 ## Important Notes
 
-- React 19 is used (latest major version)
+- **React 19** is used (latest major version)
+- **Redux Toolkit** and **React Redux** are used for state management
 - The project uses module ESM (type: "module" in package.json)
 - No test framework is currently configured
 - Data persists in browser LocalStorage; survives page refresh but is browser-specific
 - To switch back to mock data or implement API: modify `src/application/di/container.ts`
 - To modify polling interval, change the value in App.tsx (currently 5000ms)
 - LocalStorage key: `todo-app-data` (JSON serialized)
+- Redux DevTools Extension can be used for debugging state changes

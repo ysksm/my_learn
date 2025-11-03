@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
-import { Todo } from '../../domain/models/Todo';
 import { TodoItem } from './TodoItem';
+import { useAppSelector } from '../store/hooks';
+import { selectTodos } from '../store/slices/todoSlice';
 
-interface TodoListProps {
-  todos: Todo[];
-  onUpdate: () => void;
-}
+export function TodoList() {
+  const todos = useAppSelector(selectTodos);
 
-export function TodoList({ todos, onUpdate }: TodoListProps) {
   useEffect(() => {
     console.log('[TodoList] 再レンダリング、Todo数:', todos.length);
     console.log('[TodoList] Todoの内容:', todos.map(t => ({ id: t.id, status: t.status, assignee: t.assignee?.name })));
@@ -20,7 +18,7 @@ export function TodoList({ todos, onUpdate }: TodoListProps) {
   return (
     <div>
       {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} onUpdate={onUpdate} />
+        <TodoItem key={todo.id} todo={todo} />
       ))}
     </div>
   );
